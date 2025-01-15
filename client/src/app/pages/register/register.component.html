@@ -1,0 +1,166 @@
+<!-- BEGIN register -->
+<div class="register register-with-news-feed">
+	<!-- BEGIN news-feed -->
+	<div class="news-feed">
+	  <div class="news-image background-login"></div>
+	  <div class="news-caption">
+		<h4 class="caption-title"><b>Refuse</b> TDS</h4>
+		<p>Truck down system</p>
+	  </div>
+	</div>
+	<!-- END news-feed -->
+  
+	<!-- BEGIN register-container -->
+	<div class="register-container">
+	  <!-- BEGIN register-header -->
+	  <div class="register-header mb-25px h1">
+		<div class="mb-1">Register</div>
+		<small class="d-block fs-15px lh-16">Create your refuse TDS Account.</small>
+	  </div>
+	  <!-- END register-header -->
+  
+	  <!-- BEGIN register-content -->
+	  <div class="register-content">
+		<form *ngIf="!registrationSuccessful"  #f="ngForm" (ngSubmit)="formSubmit(f)" class="fs-13px was-validated">
+		  <div class="mb-3">
+			<label class="mb-2">Name <span class="text-danger">*</span></label>
+			<div class="row gx-3">
+			  <div class="col-md-6 mb-2 mb-md-0">
+				<input type="text" class="form-control fs-13px" placeholder="First name" required ngModel name="firstName" />
+				<div *ngIf="f.submitted && f.controls.firstName?.invalid && f.controls.firstName?.touched" class="invalid-feedback">
+				  First name is required.
+				</div>
+			  </div>
+			  
+			  <div class="col-md-6">
+				<input type="text" class="form-control fs-13px" placeholder="Last name" required ngModel name="lastName" />
+				<div *ngIf="f.submitted && f.controls.lastName?.invalid && f.controls.lastName?.touched" class="invalid-feedback">
+				  Last name is required.
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+		  <div class="mb-3">
+			<label class="mb-2">Username <span class="text-danger">*</span></label>
+			<input type="text" class="form-control fs-13px" placeholder="username" required ngModel name="username" />
+			<div *ngIf="f.controls.username?.invalid && f.controls.username?.touched" class="invalid-feedback">
+			  Please enter a username.
+			</div>
+		  </div>
+
+		  <div class="mb-3">
+			<label class="mb-2">Company <span class="text-danger">*</span></label>
+			<select title ='Companies' class="form-control fs-13px" name="companyId" required [(ngModel)]="companyId" (change)="refuseCompanyChange()">			 
+			  <option *ngFor="let company of locationService.refuseCompanies()" [ngValue]="company.id">{{ company.refuseCompanyName }}-{{company.refuseCompanyID}}</option>
+			</select>
+			<div *ngIf="f.controls.companyId?.errors && f.controls.companyId?.touched" class="invalid-feedback">
+			  <div *ngIf="f.controls.companyId?.errors?.required">Refuse company is required.</div>
+			</div>
+		  </div>
+
+		  <div class="mb-3" *ngIf="locationService.refuseLocations()">
+			<label class="mb-2">Location <span class="text-danger">*</span></label>
+			<select title='Locations' class="form-control fs-13px" name="locationId" required [(ngModel)]="locationId" (change)="refuseLocationChange()">			 
+			  <option value="" selected disabled>-- SELECT YOUR LOCATION --</option>
+			  <option *ngFor="let location of locationService.refuseLocations()" [ngValue]="location.locationID">{{ location.locationName }} - {{location.locationNo}}</option>
+			</select>
+			<div *ngIf="f.submitted && f.controls.locationId?.errors || f.controls.locationId == 0" class="invalid-feedback">
+			  <div *ngIf="f.controls.locationId?.errors?.required || f.controls.locationId == 0">Refuse location is required.</div>
+			</div>
+		  </div>
+
+		  <input type="hidden" name="regionId" [(ngModel)]="regionId">
+
+
+		  <div class="mb-3">
+			<label class="mb-2">Email <span class="text-danger">*</span></label>
+			<input type="email" class="form-control fs-13px" placeholder="Email address" required ngModel name="email" />
+			<div *ngIf="f.submitted && f.controls.email?.invalid && f.controls.email?.touched" class="invalid-feedback">
+			  Please enter a valid email.
+			</div>
+		  </div>
+
+		   <div class="mb-3">
+			<label class="mb-2">Contact Phone Number <span class="text-danger">*</span></label>
+			<input
+			  type="text"
+			  class="form-control fs-13px"
+			  placeholder="(123) 456-7890"
+			  name="phone"
+			  ngModel
+			  mask="(000) 000-0000"
+			  required
+			/>
+			<div *ngIf="f.submitted && f.controls.phoneNumber?.errors" class="invalid-feedback">
+			  <div *ngIf="f.controls.phoneNumber?.errors?.required">Phone number is required.</div>
+			  <div *ngIf="f.controls.phoneNumber?.errors?.pattern">Please enter a valid phone number.</div>
+			</div>
+		  </div>
+		  <div class="mb-4">
+			<label class="mb-2">Password <span class="text-danger">*</span></label>
+			<input type="password" class="form-control fs-13px" placeholder="Password" required ngModel name="password" />
+			<div *ngIf="f.controls.password?.invalid && f.controls.password?.touched" class="invalid-feedback">
+			  Password is required.
+			</div>
+		  </div>
+		  <div class="mb-4">
+			<label class="mb-2">Re-enter Password <span class="text-danger">*</span></label>
+			<input type="password" class="form-control fs-13px" placeholder="Re-enter Password" required ngModel name="reenterPassword" autocomplete="true" />
+			<div *ngIf="f.controls.reenterPassword?.invalid && f.controls.reenterPassword?.touched" class="invalid-feedback">
+				Please re-enter your password.
+			  </div>
+			<div *ngIf="!passwordsMatch(f) && f.controls.reenterPassword?.touched">
+			  <span style="width: 100%;
+			  margin-top: 0.25rem;
+			  font-size: 0.875em;
+			  color: #dc3545;">Passwords do not match.</span>
+			</div>
+		  </div>
+		  <div class="form-check mb-4">
+			<input class="form-check-input" type="checkbox" value="" id="agreementCheckbox" required ngModel name="agreement" />
+			<label class="form-check-label" for="agreementCheckbox">
+			  By clicking Sign Up, you agree to our <a href="javascript:;">Terms</a> and that you have read our <a href="javascript:;">Data Policy</a>, including our <a href="javascript:;">Cookie Use</a>.
+			</label>
+			<div *ngIf="f.submitted && f.controls.agreement?.invalid && f.controls.agreement?.touched" class="invalid-feedback">
+			  You must agree before submitting.
+			</div>
+		  </div>
+		  <div class="mb-4">
+			<button 
+			type="submit" 
+			[disabled]="!f.valid || !passwordsMatch(f) || syscoLocation === 0" 
+			class="btn btn-theme d-block w-100 btn-lg h-45px fs-13px"
+		  >
+			Sign Up
+		  </button>		  </div>
+		  <div *ngIf="registerErrorMessage" class="alert alert-danger">
+			{{ registerErrorMessage }}
+		  </div>
+		  <div class="mb-4 pb-5">
+			Already a registered user? Click <a routerLink="/login">here</a> to login.
+		  </div>
+		  <hr class="bg-gray-600 opacity-2" />
+		  <p class="text-center text-gray-600">
+			&copy; Houston Freightliner All Right Reserved 2024
+		  </p>
+		  {{f.value | json}}, {{f.status}}
+		</form>
+
+		<div *ngIf="registrationSuccessful" class="confirmation-message">
+			<h4>Thank you for registering!</h4>
+			<p>Your registration request will be reviewed, and you will receive an email once it has been approved.</p>
+			<p>If you have any questions, please contact support.</p>
+
+			<div class="mb-4 pb-5">
+				Click <a routerLink="/login">here</a> to return to the login page.
+			  </div>
+		</div>
+		
+	  </div>
+	  <!-- END register-content -->
+	</div>
+	<!-- END register-container -->
+  </div>
+  <!-- END register -->
+  

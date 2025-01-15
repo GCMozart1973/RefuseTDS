@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class AppSettings {
 	public appTheme: string = '';
 	public appCover: string = '';
-	public appDarkMode: boolean = false;
+	public appDarkMode: boolean = true;
 	public appEmpty: boolean = false;
 	public appGradientEnabled: boolean = false;
 	public appBodyWhite: boolean = false;
@@ -19,8 +19,8 @@ export class AppSettings {
   public appHeaderMegaMenu: boolean = false;
   public appHeaderLanguageBar: boolean = false;
   public appHeaderMegaMenuMobileToggled: boolean = false;
-  public appTopMenu: boolean = false;
-  public appFooter: boolean = false;
+  public appTopMenu: boolean = true;
+  public appFooter: boolean = true;
   
   public appSidebarEnd: boolean = false;
   public appSidebarTwo: boolean = false;

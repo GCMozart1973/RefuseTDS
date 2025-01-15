@@ -1,107 +1,137 @@
-import { Component, HostListener, Renderer2, OnInit } from '@angular/core';
+import { Component, HostListener, Renderer2, OnInit, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd, NavigationStart, ActivatedRoute } from '@angular/router';
 import { AppVariablesService } from './service/app-variables.service';
 import { AppSettings } from './service/app-settings.service';
-import { HttpClient } from '@angular/common/http';
+import { UserService } from './service/user.service';
+// import { UserService } from './service/user-service';
+// import { DataService } from './service/data-service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  standalone: false
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.css'],
+	standalone : false
 })
 
 export class AppComponent implements OnInit {
-  constructor(private titleService: Title, private router: Router, private renderer: Renderer2, public appSettings: AppSettings, private appVariablesService: AppVariablesService,
-	private httpClient : HttpClient
-  ) {
-    router.events.subscribe((e) => {
-			if (e instanceof NavigationStart) {
-			  if (window.innerWidth < 768) {
-			    this.appSettings.appSidebarMobileToggled = false;
-			    this.appSettings.appSidebarEndMobileToggled = false;
-			  }
+
+	private userService = inject(UserService);
+	currentUrl : any;
+	constructor(
+		// private userService: UserService,
+		private titleService: Title,
+		private router: Router,
+		private route : ActivatedRoute,
+		private renderer: Renderer2,
+		public appSettings: AppSettings,
+		private appVariablesService: AppVariablesService,
+		// private dataService: DataService
+	) {
+		this.router.events.subscribe((event: any) => {
+			if (event.url) {
+				this.currentUrl = event.url
+			  console.log('Current Path:', event.url);
 			}
-    });
-  }
+		  });
+	}
 
 	// window scroll
-  appHasScroll;
-  
+	appHasScroll;
+
 	appVariables = this.appVariablesService.getAppVariables();
 
-  ngOnInit() {
+	ngOnInit() {
+		// Local User
+		const refuseUser = localStorage.getItem('RefuseTDSUser');
+		console.warn(refuseUser);
+		document.documentElement.setAttribute('data-bs-theme', 'dark');
+		this.setCurrentUser();
+		// if (refuseUser) {
+		// 	// If refuseUser exists in localStorage, navigate to the dashboard
+		// 	this.dataService.showLoading('Loading data');
 
-	// TEST
-	this.httpClient.get('https://localhost:5109/api/User/getUsers').subscribe({
-		next:(d) => {console.warn(d)	
-		},
-	})
-    // page settings
-    if (this.appSettings.appDarkMode) {
-			this.onAppDarkModeChanged(true);
-		}
+		// 		this.router.navigate(['/dashboard']);
+
+		// 		this.userService.userRoles().subscribe();
+		// 	// page settings
+		// 	if (this.appSettings.appDarkMode) {
+		// 		this.onAppDarkModeChanged(true);
+		// 	}
+
+		// 	if (localStorage) {
+		// 		if (localStorage['appDarkMode']) {
+		// 			this.appSettings.appDarkMode = (localStorage['appDarkMode'] === 'true') ? true : false;
+		// 			if (this.appSettings.appDarkMode) {
+		// 				this.onAppDarkModeChanged(true);
+		// 			}
+		// 		}
+		// 		if (localStorage['appHeaderFixed']) {
+		// 			this.appSettings.appHeaderFixed = (localStorage['appHeaderFixed'] === 'true') ? true : false;
+		// 		}
+		// 		if (localStorage['appHeaderInverse']) {
+		// 			this.appSettings.appHeaderInverse = (localStorage['appHeaderInverse'] === 'true') ? true : false;
+		// 		}
+		// 		if (localStorage['appSidebarFixed']) {
+		// 			this.appSettings.appSidebarFixed = (localStorage['appSidebarFixed'] === 'true') ? true : false;
+		// 		}
+		// 		if (localStorage['appSidebarMinified']) {
+		// 			this.appSettings.appSidebarMinified = (localStorage['appSidebarMinified'] === 'true') ? true : false;
+		// 		}
+		// 		if (localStorage['appSidebarGrid']) {
+		// 			this.appSettings.appSidebarGrid = (localStorage['appSidebarGrid'] === 'true') ? true : false;
+		// 		}
+		// 		if (localStorage['appGradientEnabled']) {
+		// 			this.appSettings.appGradientEnabled = (localStorage['appGradientEnabled'] === 'true') ? true : false;
+		// 		}
+		// 	}
+		// }
+
 		
-		if (localStorage) {
-			if (localStorage['appDarkMode']) {
-				this.appSettings.appDarkMode = (localStorage['appDarkMode'] === 'true') ? true : false;
-				if (this.appSettings.appDarkMode) {
-					this.onAppDarkModeChanged(true);
-				}
-			}
-			if (localStorage['appHeaderFixed']) {
-				this.appSettings.appHeaderFixed = (localStorage['appHeaderFixed'] === 'true') ? true : false;
-			}
-			if (localStorage['appHeaderInverse']) {
-				this.appSettings.appHeaderInverse = (localStorage['appHeaderInverse'] === 'true') ? true : false;
-			}
-			if (localStorage['appSidebarFixed']) {
-				this.appSettings.appSidebarFixed = (localStorage['appSidebarFixed'] === 'true') ? true : false;
-			}
-			if (localStorage['appSidebarMinified']) {
-				this.appSettings.appSidebarMinified = (localStorage['appSidebarMinified'] === 'true') ? true : false;
-			}
-			if (localStorage['appSidebarGrid']) {
-				this.appSettings.appSidebarGrid = (localStorage['appSidebarGrid'] === 'true') ? true : false;
-			}
-			if (localStorage['appGradientEnabled']) {
-				this.appSettings.appGradientEnabled = (localStorage['appGradientEnabled'] === 'true') ? true : false;
-			}
-		}
-  }
-  @HostListener('window:scroll', ['$event'])
-  onWindowScroll($event) {
-    const doc = document.documentElement;
-    const top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-    if (top > 0 && this.appSettings.appHeaderFixed) {
-      this.appHasScroll = true;
-    } else {
-      this.appHasScroll = false;
-    }
-  }
+	}
 
-  // set page minified
-  onAppSidebarMinifiedToggled(val: boolean): void {
-  	this.appSettings.appSidebarMinified = !this.appSettings.appSidebarMinified;
-  	if (localStorage) {
+	setCurrentUser(){
+		const userString = localStorage.getItem('RefuseTDSUser');
+		if (!userString) return;
+		const user = JSON.parse(userString);
+		this.userService.currentUser.set(user);
+		console.error('USER EXISTS');
+		console.error(this.userService.currentUser);
+		this.router.navigate(['home']);
+	}
+
+	@HostListener('window:scroll', ['$event'])
+	onWindowScroll($event) {
+		const doc = document.documentElement;
+		const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+		if (top > 0 && this.appSettings.appHeaderFixed) {
+			this.appHasScroll = true;
+		} else {
+			this.appHasScroll = false;
+		}
+	}
+
+	// set page minified
+	onAppSidebarMinifiedToggled(val: boolean): void {
+		this.appSettings.appSidebarMinified = !this.appSettings.appSidebarMinified;
+		if (localStorage) {
 			localStorage['appSidebarMinified'] = this.appSettings.appSidebarMinified;
 		}
 	}
 
-  // set app sidebar end toggled
-  onAppSidebarEndToggled(val: boolean): void {
-  	this.appSettings.appSidebarEndToggled = !this.appSettings.appSidebarEndToggled;
+	// set app sidebar end toggled
+	onAppSidebarEndToggled(val: boolean): void {
+		this.appSettings.appSidebarEndToggled = !this.appSettings.appSidebarEndToggled;
 	}
 
-  // hide mobile sidebar
-  onAppSidebarMobileToggled(val: boolean): void {
-  	this.appSettings.appSidebarMobileToggled = !this.appSettings.appSidebarMobileToggled;
+	// hide mobile sidebar
+	onAppSidebarMobileToggled(val: boolean): void {
+		this.appSettings.appSidebarMobileToggled = !this.appSettings.appSidebarMobileToggled;
 	}
 
-  // toggle right mobile sidebar
-  onAppSidebarEndMobileToggled(val: boolean): void {
-  	this.appSettings.appSidebarEndMobileToggled = !this.appSettings.appSidebarEndMobileToggled;
+	// toggle right mobile sidebar
+	onAppSidebarEndMobileToggled(val: boolean): void {
+		this.appSettings.appSidebarEndMobileToggled = !this.appSettings.appSidebarEndMobileToggled;
 	}
 
 	onAppDarkModeChanged(val: boolean): void {
@@ -114,7 +144,7 @@ export class AppComponent implements OnInit {
 		this.appVariablesService.variablesReload.emit();
 		document.dispatchEvent(new CustomEvent('theme-change'));
 	}
-	
+
 
 	onAppThemeChanged(val: boolean): void {
 		const newTheme = 'theme-' + this.appSettings.appTheme;

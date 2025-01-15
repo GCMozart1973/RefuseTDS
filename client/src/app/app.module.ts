@@ -26,6 +26,9 @@ import { HomePage }          from './pages/home/home';
 
 // Error
 import { ErrorPage }          from './pages/error/error';
+import { Login } from './pages/login/login';
+import { RegisterComponent } from './pages/register/register.component';
+
 
 @NgModule({
   declarations: [
@@ -39,6 +42,9 @@ import { ErrorPage }          from './pages/error/error';
     ThemePanelComponent,
     
     HomePage,
+    Login,
+    RegisterComponent,
+
     
     ErrorPage
   ],
@@ -49,7 +55,7 @@ import { ErrorPage }          from './pages/error/error';
     HttpClientModule,
     ReactiveFormsModule,
     NgScrollbarModule,
-    FormsModule,
+    FormsModule
     
   ],
   providers: [ 
