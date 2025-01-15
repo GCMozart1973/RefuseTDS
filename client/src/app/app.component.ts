@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd, NavigationStart, ActivatedRoute } from '@angular/router';
 import { AppVariablesService } from './service/app-variables.service';
 import { AppSettings } from './service/app-settings.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,9 @@ import { AppSettings } from './service/app-settings.service';
 })
 
 export class AppComponent implements OnInit {
-  constructor(private titleService: Title, private router: Router, private renderer: Renderer2, public appSettings: AppSettings, private appVariablesService: AppVariablesService) {
+  constructor(private titleService: Title, private router: Router, private renderer: Renderer2, public appSettings: AppSettings, private appVariablesService: AppVariablesService,
+	private httpClient : HttpClient
+  ) {
     router.events.subscribe((e) => {
 			if (e instanceof NavigationStart) {
 			  if (window.innerWidth < 768) {
@@ -29,6 +32,12 @@ export class AppComponent implements OnInit {
 	appVariables = this.appVariablesService.getAppVariables();
 
   ngOnInit() {
+
+	// TEST
+	this.httpClient.get('https://localhost:5109/api/User/getUsers').subscribe({
+		next:(d) => {console.warn(d)	
+		},
+	})
     // page settings
     if (this.appSettings.appDarkMode) {
 			this.onAppDarkModeChanged(true);

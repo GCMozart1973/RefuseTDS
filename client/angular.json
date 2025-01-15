@@ -1,5 +1,10 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "cache": {
+      "enabled": false
+    }
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -29,16 +34,26 @@
             "styles": [
               "src/styles.css",
               "src/scss/angular.scss",
-            	"node_modules/angular-calendar/css/angular-calendar.css",
+              "node_modules/angular-calendar/css/angular-calendar.css"
             ],
             "scripts": [
-            	"node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-            	"node_modules/apexcharts/dist/apexcharts.min.js",
-            	"src/app/composables/slide.js",
-            	"src/app/composables/iconify.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/apexcharts/dist/apexcharts.min.js",
+              "src/app/composables/slide.js",
+              "src/app/composables/iconify.js"
             ],
             "allowedCommonJsDependencies": [
-            	"lodash", "lity", "jquery", "quill", "bezier-easing", "ev-emitter", "moment", "apexcharts", "jsvectormap", "rfdc", "@yaireo/tagify"
+              "lodash",
+              "lity",
+              "jquery",
+              "quill",
+              "bezier-easing",
+              "ev-emitter",
+              "moment",
+              "apexcharts",
+              "jsvectormap",
+              "rfdc",
+              "@yaireo/tagify"
             ]
           },
           "configurations": {
@@ -64,17 +79,24 @@
               ]
             },
             "development": {
-							"buildOptimizer": false,
+              "buildOptimizer": false,
               "optimization": false,
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
-						}
+            }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "ssl": true,
+            "sslCert": "../ssl/localhost.pem",
+            "sslKey": "../ssl/localhost-key.pem",
+            "host": "localhost",
+            "port": 4200
+          },
           "configurations": {
             "production": {
               "buildTarget": "color-admin:build:production"

@@ -6,6 +6,7 @@ import { HttpClientModule }                      from '@angular/common/http';
 import { AppRoutingModule }                      from './app-routing.module';
 import { NgModule }                              from '@angular/core';
 import { FormsModule, ReactiveFormsModule }      from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 
 // Main Component
 import { AppComponent }                    from './app.component';
@@ -51,7 +52,9 @@ import { ErrorPage }          from './pages/error/error';
     FormsModule,
     
   ],
-  providers: [ Title, {
+  providers: [ 
+    provideHttpClient(),
+    Title, {
 		provide: NG_SCROLLBAR_OPTIONS,
 		useValue: {
 			visibility: 'hover'
